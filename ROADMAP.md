@@ -32,3 +32,12 @@ This is a research tool, not a model-safety certification service. Progress is m
 - Tests, lint, dependency review, threat model and documented test coverage.
 - Reproducible benign and deliberately modified fixtures with licence clearance.
 - Publish false-positive rate, measured recall and environment limitations before security claims.
+
+## Refusal integrity workstream (v0.2 onward)
+
+- **Implemented:** optional refusal-marker behavioural comparison and paired directional-energy inspection of native Safetensors using user-supplied trusted vectors.
+- **P0:** curated and independently reviewed safety/refusal evaluation datasets; separate harmful-compliance adjudication from lexical refusal markers; multilingual evaluation and false-positive benchmarking.
+- **P1:** reference-vector provenance manifests, matrix orientation validation, orthogonal projection signatures across multiple layers and output-space directions.
+- **P1:** validated comparison of LoRA/merged adapters and cross-quantisation baselines with numerical tolerances.
+- **P2:** opt-in activation hooks, representation similarity and causal intervention research for supported open architectures.
+- **P2:** signed evidence reports, dashboard visualisations, longitudinal safety-drift and policy regression tracking.

@@ -107,3 +107,45 @@ Submit issues with a reproducible, non-sensitive test fixture and expected/actua
 - [References and further reading](docs/REFERENCES.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
+
+## Publishing to GitHub
+
+This repository is intended for `https://github.com/Derek000/ai-model-assurance`. Create the repository under that account first; the project is not published until the remote push succeeds.
+
+```bash
+git init -b main
+git add .
+git commit -m "Initial experimental model assurance toolkit"
+git remote add origin https://github.com/Derek000/ai-model-assurance.git
+git push -u origin main
+```
+
+## Refusal integrity and abliteration assessment (v0.2 experimental)
+
+**Purpose:** investigate signs consistent with refusal suppression or orthogonalisation against a refusal-associated direction. These are **not** malware detections or proof of malicious modification. An intentionally uncensored model may be legitimate within its authorised deployment context.
+
+**Behavioural comparison** (requires an isolated inference service; prompts are safety test requests and must not be executed as commands):
+
+```bash
+model-assure --backend ollama --model suspect:latest \
+  --baseline-model trusted:latest --refusal-integrity \
+  --output reports/refusal-integrity.json
+```
+
+The report includes candidate and baseline refusal-marker rates, a delta, per-probe classifications, benign control coverage and limitations. The initial classifier is **lexical and weak**: refusal wording, harmless compliance and harmful compliance are not equivalent. Do not treat a low refusal rate as definitive evidence of abliteration. No safety content is automatically judged by an LLM.
+
+**Paired Safetensors projection analysis** (optional):
+
+```bash
+pip install -e '.[weights,dev]'
+model-assure --path /quarantine/suspect-safetensors \
+  --weight-baseline /trusted/original-safetensors \
+  --refusal-directions /trusted/directions.npz \
+  --output reports/refusal-weights.json
+```
+
+The `.npz` archive must contain one-dimensional, finite, independently validated direction vectors keyed by **exact 2D Safetensors tensor names** (for example `model.layers.0.self_attn.o_proj.weight`). Each direction length must equal the matrix's column count. This tool **does not generate** the direction vectors. It reports the fraction of Frobenius energy along the direction, relative weight deltas and candidate/reference ratios. A depleted projection can be consistent with a directional removal operation but is **not** sufficient to establish cause. Quantised GGUF files cannot be used for this comparison directly. Files are read through Safetensors without executing model code; use an isolated machine for untrusted files.
+
+**Interpretation:** Confirm source provenance, architecture, template and tokenizer equality; compare multiple independently validated refusal directions; assess reproducibility with matched inference settings; manually review behavioural evidence; distinguish ordinary fine-tuning, policy choices, quantisation and malicious backdoors. The module never edits model weights.
+
+See [Refusal integrity methodology](docs/REFUSAL_INTEGRITY.md).

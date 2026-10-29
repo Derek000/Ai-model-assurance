@@ -11,6 +11,7 @@ license = {text = "MIT"}
 authors = [{name = "Community contributors"}]
 dependencies = []
 [project.optional-dependencies]
+weights = ["numpy>=1.26", "safetensors>=0.4"]
 dev = ["pytest>=8", "ruff>=0.6"]
 [project.scripts]
 model-assure = "model_assurance.cli:main"
